@@ -1,0 +1,17 @@
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: http://${EUREKA_SERVER_CONTAINER_NAME}:${EUREKA_SERVER_PORT}/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, refresh
+
+spring:
+  cloud:
+    config:
+      overrideSystemProperties: false

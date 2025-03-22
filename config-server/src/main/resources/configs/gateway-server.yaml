@@ -1,0 +1,27 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+
+server:
+  port: ${GATEWAY_SERVER_PORT}
+
+eureka:
+  instance:
+    hostname: ${GATEWAY_SERVICE_CONTAINER_NAME}
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    disable-swagger-default-url: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
