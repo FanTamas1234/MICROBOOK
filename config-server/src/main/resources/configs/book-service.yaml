@@ -22,8 +22,8 @@ eureka:
 springdoc:
   api-docs:
     enabled: true
-    path: /api/v1/book/v3/api-docs
+    path: /api/v1/books/v3/api-docs
   swagger-ui:
     enabled: true
     disable-swagger-default-url: true
-    path: /api/v1/book/swagger-ui.html
+    path: /api/v1/books/swagger-ui.html

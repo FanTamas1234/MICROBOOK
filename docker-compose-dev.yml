@@ -38,9 +38,9 @@ services:
       config-server:
         condition: service_healthy
 
-  gateway-service:
+  gateway-server:
     build:
-      context: ./gateway-service
+      context: ./gateway-server
       dockerfile: ./Dockerfile
     env_file:
       - .env
@@ -48,17 +48,14 @@ services:
     ports:
       - "${GATEWAY_SERVER_PORT}:${GATEWAY_SERVER_PORT}"
     environment:
-      #      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=TRACE
       - TZ=Europe/Moscow
-      #      - OIDC_ISSUER_URI=http://${KEYCLOAK_CONTAINER_NAME}:8080/realms/demo
-      - OIDC_ISSUER_URI_OUTER=http://keycloak.server.com:8080/realms/demo
     networks:
       - microservices-net
     depends_on:
       eureka-server:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "sh", "-c", "curl --fail --silent http://localhost:${GATEWAY_SERVER_PORT}/actuator/health | grep 'UP'" ]
+      test: [ "CMD", "sh -c", "curl --fail --silent http://localhost:${GATEWAY_SERVER_PORT}/actuator/health | grep 'UP'" ]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -99,7 +96,7 @@ services:
     networks:
       - microservices-net
     depends_on:
-      gateway-service:
+      gateway-server:
         condition: service_healthy
       user_db:
         condition: service_healthy
@@ -147,7 +144,7 @@ services:
     networks:
       - microservices-net
     depends_on:
-      gateway-service:
+      gateway-server:
         condition: service_healthy
       exchange_db:
         condition: service_healthy
@@ -197,7 +194,7 @@ services:
     networks:
       - microservices-net
     depends_on:
-      gateway-service:
+      gateway-server:
         condition: service_healthy
       book_db:
         condition: service_healthy

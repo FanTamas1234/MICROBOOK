@@ -1,10 +1,43 @@
 spring:
   cloud:
     gateway:
+      defaultFilters:
+        - TokenRelay=
       discovery:
         locator:
           enabled: true
       routes:
+        - id: exchange-service
+          uri: lb:http://EXCHANGE-SERVICE
+          predicates:
+            - Path=/api/v1/exchange/**
+        - id: book-service
+          uri: lb:http://BOOK-SERVICE
+          predicates:
+            - Path=/api/v1/books/**
+        - id: user-service
+          uri: lb:http://USER-SERVICE
+          predicates:
+            - Path=/api/v1/user/**
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwkSetUri: ${OIDC_ISSUER_URI_OUTER}/protocol/openid-connect/certs
+      client:
+        provider:
+          keycloak-provider:
+            issuerUri: ${OIDC_ISSUER_URI_OUTER}
+            authorizationUri: ${OIDC_ISSUER_URI_OUTER}/protocol/openid-connect/auth
+            userInfoUri: ${OIDC_ISSUER_URI_OUTER}/protocol/openid-connect/userinfo
+            tokenUri: ${OIDC_ISSUER_URI_OUTER}/protocol/openid-connect/token
+        registration:
+          spring-with-test-scope:
+            provider: keycloak-provider
+            clientId: gateway-client
+            client-secret: ${KEYCLOAK_CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            scope: openid
 
 server:
   port: ${GATEWAY_SERVER_PORT}
@@ -25,3 +58,11 @@ springdoc:
     path: /swagger-ui.html
     config-url: /v3/api-docs/swagger-config
     urls:
+      - url: /v3/api-docs
+        name: Gateway Service
+      - url: /api/v1/exchange/v3/api-docs
+        name: Exchange Service
+      - url: /api/v1/books/v3/api-docs
+        name: Book Service
+      - url: /api/v1/user/v3/api-docs
+        name: User Service
