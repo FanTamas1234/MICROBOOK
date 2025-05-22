@@ -27,3 +27,11 @@ springdoc:
     enabled: true
     disable-swagger-default-url: true
     path: /api/v1/user/swagger-ui.html
+
+app:
+  keycloak:
+    admin:
+      clientId: admin-cli
+      clientSecret: ${KEYCLOAK_ADMIN_CLIENT_SECRET}
+    realm: microbook
+    serverUrl: http://${KEYCLOAK_HOST_NAME}:8080
