@@ -1,4 +1,4 @@
-package com.booking.book.exchangeservice.config;
+package com.booking.book.gatewayserver.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.OpenAPI;

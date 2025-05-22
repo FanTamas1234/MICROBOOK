@@ -1,4 +1,4 @@
-package com.booking.book.gatewayservice.config;
+package com.booking.book.gatewayserver.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
 
-        http.csrf(csrf -> csrf.disable())
+        http.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(auth -> auth
                         .pathMatchers(freeResourceUrls)
                         .permitAll()

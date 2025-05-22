@@ -1,5 +1,6 @@
 package com.booking.book.bookservice.model;
 
+import io.micrometer.core.instrument.Meter;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.UUID;
