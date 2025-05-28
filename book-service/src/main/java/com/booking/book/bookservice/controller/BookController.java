@@ -2,6 +2,9 @@ package com.booking.book.bookservice.controller;
 
 import com.booking.book.bookservice.dto.BookRequestDto;
 import com.booking.book.bookservice.dto.BookResponseDto;
+import com.booking.book.bookservice.dto.UserBookRequestDto;
+import com.booking.book.bookservice.dto.UserBookResponseDto;
+import com.booking.book.bookservice.model.UserBook;
 import com.booking.book.bookservice.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -62,5 +65,14 @@ public class BookController {
     public ResponseEntity<List<BookResponseDto>> getAllBooks() {
         return new ResponseEntity<>(bookService.getAllBooks(), HttpStatus.OK);
     }
+    @PreAuthorize("hasAnyRole('MANAGER','USER')")
+    @PostMapping("/private/bookAdd")
+    public ResponseEntity<UserBookResponseDto> addBookToUser(
 
+            @RequestBody UserBookRequestDto bookRequest
+    ) {
+
+        UserBookResponseDto response = bookService.addBookToUser(bookRequest);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 }

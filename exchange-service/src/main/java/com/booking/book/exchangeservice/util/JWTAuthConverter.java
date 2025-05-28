@@ -1,4 +1,4 @@
-package com.booking.book.bookservice.util;
+package com.booking.book.exchangeservice.util;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.converter.Converter;

@@ -9,7 +9,7 @@ services:
     ports:
       - "${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}"
     healthcheck:
-      test: ["CMD", "sh", "-c", "curl --fail --silent http://localhost:${CONFIG_SERVER_PORT}/actuator/health | grep 'UP'"]
+      test: [ "CMD", "sh", "-c", "curl --fail --silent http://localhost:${CONFIG_SERVER_PORT}/actuator/health | grep 'UP'" ]
       interval: 5s
       timeout: 5s
       retries: 3
@@ -100,8 +100,8 @@ services:
         condition: service_started
       user_db:
         condition: service_healthy
-#      kafka:
-#        condition: service_healthy
+    #      kafka:
+    #        condition: service_healthy
     healthcheck:
       test: [ "CMD", "sh", "-c", "curl --fail --silent http://localhost:${USER_SERVER_PORT}/actuator/health | grep 'UP'" ]
       interval: 10s
@@ -145,13 +145,11 @@ services:
       - microservices-net
     depends_on:
       gateway-server:
-        condition: service_healthy
+        condition: service_started
       exchange_db:
         condition: service_healthy
-#      kafka:
-#        condition: service_healthy
-#      kibana:
-#        condition: service_started
+      kafka:
+        condition: service_healthy
     healthcheck:
       test: [ "CMD", "sh", "-c", "curl --fail --silent http://localhost:${EXCHANGE_SERVER_PORT}/actuator/health | grep 'UP'" ]
       interval: 10s
@@ -198,8 +196,8 @@ services:
         condition: service_started
       book_db:
         condition: service_healthy
-#      kafka:
-#        condition: service_healthy
+      kafka:
+        condition: service_healthy
     healthcheck:
       test: [ "CMD", "sh", "-c", "curl --fail --silent http://localhost:${BOOK_SERVER_PORT}/actuator/health | grep 'UP'" ]
       interval: 10s
@@ -235,8 +233,8 @@ services:
       - 8080:8080
     env_file:
       - .env
-#    volumes:
-#      - ./realm-export-with-roles.json:/opt/keycloak/data/import/msa-order-ticket-payment.json
+    #    volumes:
+    #      - ./realm-export-with-roles.json:/opt/keycloak/data/import/msa-order-ticket-payment.json
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
@@ -254,6 +252,40 @@ services:
     command:
       - "start-dev"
 #      - "--import-realm"
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "22181:2181"
+    networks:
+      - microservices-net
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: ${KAFKA_CONTAINER_NAME}
+    depends_on:
+      - zookeeper
+    ports:
+      - "${KAFKA_PORT}:${KAFKA_PORT}"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${KAFKA_CONTAINER_NAME}:9092,PLAINTEXT_HOST://localhost:${KAFKA_PORT}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: [ "CMD", "kafka-broker-api-versions", "--bootstrap-server", "kafka:${KAFKA_PORT}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - microservices-net
+
 
 networks:
   microservices-net:

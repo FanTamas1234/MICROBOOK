@@ -2,6 +2,10 @@ package com.booking.book.exchangeservice.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.util.UUID;
 import java.time.LocalDateTime;
 
@@ -10,17 +14,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
+@EntityListeners(AuditingEntityListener.class)
 public class Exchange {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private UUID initiator_id;
-    private UUID receiver_id;
-    private UUID initiator_book_id;
-    private UUID receiver_book_id;
+    private UUID initiatorId;
+    private UUID receiverId;
+    private String initiatorBookId;
+    private String receiverBookId;
     private TradeStatus status;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
-    private LocalDateTime completion_date;
+    @CreatedDate
+    private LocalDateTime createdAt;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+    private LocalDateTime completionDate;
 }

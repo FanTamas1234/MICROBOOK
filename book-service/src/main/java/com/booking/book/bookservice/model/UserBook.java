@@ -3,6 +3,9 @@ package com.booking.book.bookservice.model;
 import io.micrometer.core.instrument.Meter;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.util.UUID;
 import java.time.LocalDateTime;
 
@@ -11,19 +14,20 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
+@EntityListeners(AuditingEntityListener.class)
 public class UserBook {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private UUID user_id;
+    private UUID userId;
     @ManyToOne
-    @JoinColumn(name = "book_id",referencedColumnName = "isbn")
+    @JoinColumn(name = "bookId",referencedColumnName = "isbn")
     @ToString.Exclude
-    private Book book_id;
+    private Book bookId;
     private Condition condition;
     private BookStatus status;
-    private LocalDateTime added_at;
+    @CreatedDate
+    private LocalDateTime addedAt;
     private String comment;
 
 }
