@@ -14,7 +14,6 @@ Backend:
 - Swagger - для документирования и тестирования API;
 - Postman - также для тестирования API;
 - ELK (Elasticsearch, Logstash, Kibana) - для реализации паттерна микросервисной архитектуры “Агрегация логов”.
-![Python 3.12](https://img.shields.io/badge/Python-3.12-brightgreen.svg?style=flat&logo=python&logoColor=white)
 📂 Структура проекта
 Сервисы:
 - User-service – управление пользователями;
